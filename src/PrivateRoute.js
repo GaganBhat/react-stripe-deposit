@@ -4,6 +4,12 @@ import { AuthContext } from "./Auth";
 
 const PrivateRoute = ({ component: RouteComponent, ...rest }) => {
   const {currentUser} = useContext(AuthContext);
+
+  if(currentUser != null)
+    console.log("Current User Email = " + currentUser.email)
+  else
+    console.log("Current user not signed in")
+
   return (
     <Route
       {...rest}

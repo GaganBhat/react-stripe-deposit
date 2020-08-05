@@ -1,5 +1,5 @@
 import React from 'react'
-import app from '../base'
+import app from '../services/firebase'
 import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
@@ -10,6 +10,7 @@ import {
 } from '@stripe/react-stripe-js';
 
 import "./DepositStylesheet.css";
+import * as Firestore from "../services/firestore";
 
 
 const CARD_ELEMENT_OPTIONS = {
