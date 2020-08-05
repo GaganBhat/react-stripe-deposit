@@ -1,13 +1,24 @@
-import React from "react";
-import app from "../base";
+import React from 'react'
+import app from '../base'
+import { useState } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import {
+  CardElement,
+  Elements,
+  useElements,
+  useStripe
+} from '@stripe/react-stripe-js';
+
+import "./DepositStylesheet.css";
+import Deposit from './Deposit'
+
 
 const Home = () => {
-  return (
-    <div style={{width: "30%", margin: "0 auto"}}>
-      <h1>You are Logged In</h1>
-      <button onClick={() => app.auth().signOut()}>Sign out</button>
+  return(
+    <div>
+      <Deposit/>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
