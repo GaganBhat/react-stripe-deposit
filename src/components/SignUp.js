@@ -3,6 +3,7 @@ import { withRouter } from "react-router";
 import app from "../services/firebase";
 import { Link } from 'react-router-dom'
 import * as Firestore from "../services/firestore"
+import useStripe from "@stripe/react-stripe-js";
 
 const SignUp = ({ history }) => {
   const handleSignUp = useCallback(async event => {
@@ -13,9 +14,8 @@ const SignUp = ({ history }) => {
       .auth()
       .createUserWithEmailAndPassword(email.value, password.value)
       .then(() => {
-        console.log("Created new user with firebase");
         const userData = {email: email.value, name: name.value, currentDepositValue: 0}
-        Firestore.createUser(userData);
+        Firestore.CreateUser(userData);
       })
       history.push("/");
     } catch (error) {
