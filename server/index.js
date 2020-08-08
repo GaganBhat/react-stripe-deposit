@@ -1,18 +1,16 @@
-const express = require("express");
+import express from 'express';
+
+import SERVER_CONFIGS from './constants/server';
+
+import configureServer from './server';
+import configureRoutes from './routes';
+
 const app = express();
-const port = process.env.APIPORT || 4000;
-const { stripeService } = require('./services/stripe.js');
 
-app.use(express.json());
+configureServer(app);
+configureRoutes(app);
 
-app.get("/", (req, res) => {
-  res.send(`Backend API is running on port ${port}.`);
+app.listen(SERVER_CONFIGS.PORT, error => {
+  if (error) throw error;
+  console.log('Server running on port: ' + SERVER_CONFIGS.PORT);
 });
-
-app.post("/stripe/createcustomer", async (req, res) => {
-  const customer = await stripeService.CreateCustomer(req.body);
-  res.json(customer);
-});
-
-app.listen(port, () => {console.log(`Started express server on port ${port}.`)});
-

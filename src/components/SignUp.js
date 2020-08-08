@@ -4,6 +4,7 @@ import app from "../services/firebase";
 import { Link } from 'react-router-dom'
 import * as Firestore from "../services/firestore"
 import useStripe from "@stripe/react-stripe-js";
+import axios from 'axios';
 
 const SignUp = ({ history }) => {
   const handleSignUp = useCallback(async event => {
@@ -15,6 +16,10 @@ const SignUp = ({ history }) => {
       .createUserWithEmailAndPassword(email.value, password.value)
       .then(() => {
         const userData = {email: email.value, name: name.value, currentDepositValue: 0}
+        // axios.post('/customers/createcustomer', {})
+        // .then(function (response) {
+        //   console.log(response);
+        // })
         Firestore.CreateUser(userData);
       })
       history.push("/");
