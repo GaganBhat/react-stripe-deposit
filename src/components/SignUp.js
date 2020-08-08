@@ -14,14 +14,16 @@ const SignUp = ({ history }) => {
       await app
       .auth()
       .createUserWithEmailAndPassword(email.value, password.value)
-      .then(() => {
+      .then(async () => {
         const userData = {email: email.value, name: name.value, currentDepositValue: 0}
-        // axios.post('/customers/createcustomer', {})
-        // .then(function (response) {
-        //   console.log(response);
-        // })
+        await axios.post('http://localhost:8888/customers/createcustomer', userData)
+        .then(function (response) {
+          userData.customerID = response.data.id;
+          console.log(response);
+        })
         Firestore.CreateUser(userData);
       })
+
       history.push("/");
     } catch (error) {
       alert(error);

@@ -15,6 +15,7 @@ const customerApi = app => {
   });
 
   app.post("/customers/createcustomer", async (req, res) => {
+    console.log("Got Create User Request with data " + req.body)
     const customer = await customerStripeService.CreateCustomer(req.body);
     res.json(customer);
   });
