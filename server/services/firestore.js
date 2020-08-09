@@ -27,7 +27,7 @@ export const AddUserDeposit = (email, additionalDeposit) => {
 
   if (email != null) {
     const userData =  GetUserData(email);
-    const currentDepositValue = userData.data().currentDepositValue;
+    const currentDepositValue = userData.getData().currentDepositValue;
     const finalDepositTotal = currentDepositValue + additionalDeposit;
     console.log("Previous deposit value was $" + currentDepositValue);
     console.log("Final Deposit Total is $" + (finalDepositTotal));
