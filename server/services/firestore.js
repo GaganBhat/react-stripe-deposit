@@ -1,16 +1,13 @@
-import React, { useContext } from 'react'
 import app from "./firebase";
-import { AuthProvider } from '../Auth'
 
 const db = app.firestore();
 const userCollection = db.collection("users");
 
 
 
-export const GetUserData = () => {
-  const currentUser = useContext(AuthProvider)
-  if(currentUser != null)
-    return userCollection.doc(currentUser.email)
+export const GetUserData = (email) => {
+  if(email != null)
+    return userCollection.doc(email)
       .get();
   else
     return console.log("No User is Authenticated")
@@ -24,4 +21,13 @@ export const CreateUser = userData => {
   .catch(function(error) {
     console.error("Error writing document: ", error);
   });
+}
+
+export const AddUserDeposit = (email, additionalDeposit) => {
+  if(email != null)
+    return userCollection.doc(email).update({
+      currentDepositValue: (GetUserData().currentDepositValue + additionalDeposit)
+    });
+  else
+    return console.log("No User is Authenticated");
 }
