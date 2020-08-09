@@ -22,11 +22,12 @@ export const CreateUser = userData => {
   });
 }
 
-export const AddUserDeposit =  async (email, additionalDeposit) => {
-  const userData = await GetUserData(email).data();
-  const currentDepositValue = userData.currentDepositValue;
-  const finalDepositTotal = currentDepositValue + additionalDeposit;
+export const AddUserDeposit = (email, additionalDeposit) => {
+
   if (email != null) {
+    const userData =  GetUserData(email).data();
+    const currentDepositValue = userData.currentDepositValue;
+    const finalDepositTotal = currentDepositValue + additionalDeposit;
     console.log("Previous deposit value was $" + currentDepositValue);
     console.log("Final Deposit Total is $" + (finalDepositTotal));
     return userCollection.doc(email).update({
