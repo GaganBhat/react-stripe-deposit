@@ -17,7 +17,7 @@ const SignUp = ({ history }) => {
       .then(async () => {
         const userData = {email: email.value, name: name.value, currentDepositValue: 0}
         await axios.post(
-          'http://ec2-54-234-100-58.compute-1.amazonaws.com:8888/customers/createcustomer', userData)
+          'https://api.gaganbhat.me/customers/createcustomer', userData)
         .then(function (response) {
           userData.customerID = response.data.id;
           console.log(response);

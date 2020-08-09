@@ -71,7 +71,7 @@ const Deposit = ({ isScriptLoaded, isScriptLoadSucceed }) => {
     event.preventDefault();
     console.log(amount)
     const session = await axios.post(
-      'http://ec2-54-234-100-58.compute-1.amazonaws.com:8888/payment/session-initiate',
+      'https://api.gaganbhat.me/payment/session-initiate',
       {
         customerEmail: currentUser.email,
         clientReferenceId: currentUser.customerID,
