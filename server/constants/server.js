@@ -1,4 +1,5 @@
 import path from 'path';
+require("dotenv").config();
 
 const SERVER_CONFIGS = {
   PRODUCTION: process.env.NODE_ENV === 'production',
