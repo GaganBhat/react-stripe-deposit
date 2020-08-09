@@ -20,8 +20,9 @@ const paymentApi = app => {
     } = req.body;
 
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-
     let session;
+
+    console.log("So far, so good in payments.")
 
     try {
       session = await stripe.checkout.sessions.create({
@@ -35,7 +36,9 @@ const paymentApi = app => {
         success_url: successUrl,
         cancel_url: cancelUrl,
       });
+
     } catch (error) {
+      console.log("Oof, payments failed due to " + error);
       res.status(500).send({ error });
     }
 
@@ -43,6 +46,7 @@ const paymentApi = app => {
   });
 
   app.post('/payment/session-complete', async (req, res) => {
+    console.log("Running session Complete")
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
     let event;
@@ -51,7 +55,7 @@ const paymentApi = app => {
       event = stripe.webhooks.constructEvent(
         req.rawBody,
         req.headers['stripe-signature'],
-        'YOUR_STRIPE_WEBHOOK_SECRET'
+        process.env.STRIPE_WEBHOOK_KEY
       );
     } catch (error) {
       return res.status(400).send(`Webhook Error: ${error.message}`);

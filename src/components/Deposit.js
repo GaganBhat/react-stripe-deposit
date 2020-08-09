@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import app from '../services/firebase'
 import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
@@ -10,7 +10,10 @@ import {
 } from '@stripe/react-stripe-js';
 
 import "./DepositStylesheet.css";
-import * as Firestore from "../services/firestore";
+import axios from 'axios';
+import { AuthContext } from '../Auth'
+import scriptLoader from 'react-async-script-loader';
+require("dotenv").config();
 
 
 const CARD_ELEMENT_OPTIONS = {
@@ -31,9 +34,54 @@ const CARD_ELEMENT_OPTIONS = {
   }
 };
 
+const toCent = amount => amount * 100;
 
-const Deposit = () => {
-  const stripePromise = loadStripe('pk_test_51HCa9xJnjJ8gDiA181Z9tppM714GWWIzf3Gv7j8YpvTo0vCJsXjBl6XR7TMSPTSqSFHZb3nTE0awpPppExzoZoGC000LRjADk0');
+const Deposit = ({ isScriptLoaded, isScriptLoadSucceed }) => {
+
+  const [stripe, setStripe] = React.useState(100);
+
+  React.useEffect(() => {
+    if (isScriptLoaded && isScriptLoadSucceed) {
+      setStripe(window.Stripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY));
+    }
+  }, [isScriptLoaded, isScriptLoadSucceed]);
+
+  const {currentUser} = useContext(AuthContext);
+
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+
+  const [amount, setAmount] = React.useState(0);
+
+  const handleDeposit = async event => {
+    event.preventDefault();
+    console.log(amount)
+    const session = await axios.post(
+      'http://localhost:8888/payment/session-initiate',
+      {
+        customerEmail: currentUser.email,
+        clientReferenceId: currentUser.customerID,
+        lineItem: {
+          name: 'Deposit to Bet America',
+          amount: toCent(amount),
+          currency: "usd",
+          quantity: 1,
+        },
+        successUrl: window.location.href,
+        cancelUrl: window.location.href,
+      }
+    );
+
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.data.id,
+    });
+
+    console.log(result.error.message);
+  };
+
+  if (!stripe) {
+    return null;
+  }
+
 
   return (
     <div>
@@ -65,11 +113,11 @@ const Deposit = () => {
           </form>
         </details>
         <hr/>
-        <form id="payment-form">
+        <form id="payment-form" onSubmit={handleDeposit}>
           <div>
             <label>
               Card:
-              <select name="payment-method" required/>
+              <select name="payment-method"/>
             </label>
           </div>
           <div>
@@ -77,11 +125,11 @@ const Deposit = () => {
               Amount:
               <input
                 name="amount"
-                type="number"
                 min="1"
                 max="99999999"
-                value="100"
+                defaultValue="100"
                 required
+                onChange={event => setAmount(event.target.value)}
               />
             </label>
             <label>
@@ -106,4 +154,4 @@ const Deposit = () => {
   )
 }
 
-export default Deposit;
+export default scriptLoader('https://js.stripe.com/v3/')(Deposit);
