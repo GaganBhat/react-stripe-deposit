@@ -10,7 +10,7 @@ export const GetUserData = (email) => {
     return userCollection.doc(email)
       .get();
   else
-    return console.log("No User is Authenticated")
+    return console.log("No User is Authenticated for get user. ")
 }
 
 export const CreateUser = userData => {
@@ -26,8 +26,8 @@ export const CreateUser = userData => {
 export const AddUserDeposit = (email, additionalDeposit) => {
   if(email != null)
     return userCollection.doc(email).update({
-      currentDepositValue: (GetUserData().currentDepositValue + additionalDeposit)
+      currentDepositValue: (GetUserData(email).currentDepositValue + additionalDeposit)
     });
   else
-    return console.log("No User is Authenticated");
+    return console.log("No User is Authenticated for add user deposit.");
 }

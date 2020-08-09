@@ -23,7 +23,6 @@ const paymentApi = app => {
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
     let session;
 
-    console.log("So far, so good in payments.")
 
     try {
       session = await stripe.checkout.sessions.create({
@@ -37,7 +36,8 @@ const paymentApi = app => {
         success_url: successUrl,
         cancel_url: cancelUrl,
       });
-
+      console.log("------------------");
+      console.log("Initialized session payment for " + customerEmail);
     } catch (error) {
       console.log("Oof, payments failed due to " + error);
       res.status(500).send({ error });
@@ -70,10 +70,11 @@ const paymentApi = app => {
         console.log("Processing Session Completed Event for " + email + " for " + totalAmount);
         Firestore.AddUserDeposit(email, totalAmount);
       } catch (error) {
+        console.log("------------------");
         return res.status(404).send({ error, session });
       }
     }
-
+    console.log("------------------");
     return res.status(200).send({ received: true });
   })
 
