@@ -10,9 +10,9 @@ import configureRoutes from './routes';
 const app = express();
 
 // Certificate
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/api.gaganbhat.me/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/api.gaganbhat.me/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/api.gaganbhat.me/chain.pem', 'utf8');
+const privateKey = fs.readFileSync('/home/ubuntu/Programming/sports-betting/certificates/api.gaganbhat.me/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/home/ubuntu/Programming/sports-betting/certificates/api.gaganbhat.me/cert.pem', 'utf8');
+const ca = fs.readFileSync('/home/ubuntu/Programming/sports-betting/certificates/api.gaganbhat.me/chain.pem', 'utf8');
 
 const credentials = {
   key: privateKey,
