@@ -72,6 +72,7 @@ const paymentApi = app => {
         Firestore.AddUserDeposit(email, (totalAmount / 100.0));
       } catch (error) {
         console.log("------------------");
+        console.log("Error = " + error)
         return res.status(404).send({ error, session });
       }
     }
