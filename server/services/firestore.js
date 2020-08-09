@@ -46,6 +46,7 @@ export const AddUserDeposit = async (email, additionalDeposit) => {
       console.log("Successfully Updated value in firestore.")
     }).catch((e) => {
       console.log("Error = " + e)
+      throw e
     })
     return documentReference;
   } else
