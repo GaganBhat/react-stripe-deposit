@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import app from '../services/firebase'
 import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
@@ -8,6 +8,7 @@ import {
   useElements,
   useStripe
 } from '@stripe/react-stripe-js';
+import * as Firestore from "../services/firestore"
 
 import "./DepositStylesheet.css";
 import axios from 'axios';
@@ -37,8 +38,10 @@ const CARD_ELEMENT_OPTIONS = {
 const toCent = amount => amount * 100;
 
 const Deposit = ({ isScriptLoaded, isScriptLoadSucceed }) => {
+  let currentDepositVal = NaN;
 
-  const [stripe, setStripe] = React.useState(100);
+  const [depositVal, setDepositVal] = React.useState(NaN);
+  const [stripe, setStripe] = React.useState();
 
   React.useEffect(() => {
     if (isScriptLoaded && isScriptLoadSucceed) {
@@ -48,9 +51,21 @@ const Deposit = ({ isScriptLoaded, isScriptLoadSucceed }) => {
 
   const {currentUser} = useContext(AuthContext);
 
+
+  React.useEffect(  () => {
+    let userData;
+    async function getData() {
+      userData = await Firestore.GetUserDataCustom(currentUser);
+      setDepositVal(userData.get("currentDepositValue"));
+    }
+    getData();
+  }, [])
+
+  console.log("Deposit Val = " + depositVal);
+
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
-  const [amount, setAmount] = React.useState(0);
+  const [amount, setAmount] = React.useState(100);
 
   const handleDeposit = async event => {
     event.preventDefault();
@@ -92,37 +107,47 @@ const Deposit = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       />
       <div>
         <h1 style={{ textAlign: 'center' }}>Deposit Securely</h1>
-        <h2>Payment Methods</h2>
-        <details id="add-new-card">
-          <summary>Add new card</summary>
-          <form id="payment-method-form">
-            <label>
-              Cardholder name
-              <input type="text" name="name" required/>
-            </label>
-            <fieldset style={{backgroundColor: "#f6f8fa"}}>
-              <Elements stripe={stripePromise}>
-                <CardElement
-                  id="card-element"
-                  options={CARD_ELEMENT_OPTIONS}
-                />
-              </Elements>
-            </fieldset>
-            <div id="error-message" role="alert"/>
-            <button>Save Card</button>
-          </form>
-        </details>
+        {/*<h2>Payment Methods</h2>*/}
+        {/*<details id="add-new-card">*/}
+        {/*  <summary>Add new card</summary>*/}
+        {/*  <form id="payment-method-form">*/}
+        {/*    <label>*/}
+        {/*      Cardholder name*/}
+        {/*      <input type="text" name="name" required/>*/}
+        {/*    </label>*/}
+        {/*    <fieldset style={{backgroundColor: "#f6f8fa"}}>*/}
+        {/*      <Elements stripe={stripePromise}>*/}
+        {/*        <CardElement*/}
+        {/*          id="card-element"*/}
+        {/*          options={CARD_ELEMENT_OPTIONS}*/}
+        {/*        />*/}
+        {/*      </Elements>*/}
+        {/*    </fieldset>*/}
+        {/*    <div id="error-message" role="alert"/>*/}
+        {/*    <button>Save Card</button>*/}
+        {/*  </form>*/}
+        {/*</details>*/}
         <hr/>
+        <label id="currentDepositLabel">
+          Current Account Value in USD
+          <input
+            name="currentDepositVal"
+            min="1"
+            max="99999999"
+            value={depositVal}
+          />
+        </label>
         <form id="payment-form" onSubmit={handleDeposit}>
+          {/*<div>*/}
+          {/*  <label>*/}
+          {/*    Card:*/}
+          {/*    <select name="payment-method"/>*/}
+          {/*  </label>*/}
+          {/*</div>*/}
           <div>
+
             <label>
-              Card:
-              <select name="payment-method"/>
-            </label>
-          </div>
-          <div>
-            <label>
-              Amount:
+              Amount to deposit: <br/>
               <input
                 name="amount"
                 min="1"
@@ -131,14 +156,15 @@ const Deposit = ({ isScriptLoaded, isScriptLoadSucceed }) => {
                 required
                 onChange={event => setAmount(event.target.value)}
               />
+              <br/>
             </label>
             <label>
               Currency:
               <select name="currency">
                 <option value="usd">USD</option>
-                <option value="eur">EUR</option>
-                <option value="gbp">GBP</option>
-                <option value="jpy">JPY</option>
+                {/*<option value="eur">EUR</option>*/}
+                {/*<option value="gbp">GBP</option>*/}
+                {/*<option value="jpy">JPY</option>*/}
               </select>
             </label>
           </div>

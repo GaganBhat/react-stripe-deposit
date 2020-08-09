@@ -6,12 +6,18 @@ const db = app.firestore();
 const userCollection = db.collection("users");
 
 
-
 export const GetUserData = () => {
   const currentUser = useContext(AuthProvider)
   if(currentUser != null)
     return userCollection.doc(currentUser.email)
       .get();
+  else
+    return console.log("No User is Authenticated")
+}
+
+export const GetUserDataCustom = async (currentUser) => {
+  if (currentUser != null)
+    return await userCollection.doc(currentUser.email).get();
   else
     return console.log("No User is Authenticated")
 }

@@ -16,7 +16,8 @@ const SignUp = ({ history }) => {
       .createUserWithEmailAndPassword(email.value, password.value)
       .then(async () => {
         const userData = {email: email.value, name: name.value, currentDepositValue: 0}
-        await axios.post('http://localhost:8888/customers/createcustomer', userData)
+        await axios.post(
+          'http://ec2-54-234-100-58.compute-1.amazonaws.com:8888/customers/createcustomer', userData)
         .then(function (response) {
           userData.customerID = response.data.id;
           console.log(response);
@@ -26,6 +27,7 @@ const SignUp = ({ history }) => {
 
       history.push("/");
     } catch (error) {
+      await app.auth().currentUser.delete();
       alert(error);
     }
   }, [history]);
