@@ -24,10 +24,12 @@ export const CreateUser = userData => {
 }
 
 export const AddUserDeposit = (email, additionalDeposit) => {
-  if(email != null)
+  if(email != null){
+    console.log("Previous deposit value was $" + (GetUserData(email).currentDepositValue));
+    console.log("Adding $" + (additionalDeposit/100.0))
     return userCollection.doc(email).update({
       currentDepositValue: (GetUserData(email).currentDepositValue + additionalDeposit)
     });
-  else
+  } else
     return console.log("No User is Authenticated for add user deposit.");
 }

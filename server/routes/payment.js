@@ -67,8 +67,9 @@ const paymentApi = app => {
       const email = event.data.object.customer_email;
       const totalAmount = event.data.object.amount_total;
       try {
-        console.log("Processing Session Completed Event for " + email + " for " + totalAmount);
-        Firestore.AddUserDeposit(email, totalAmount);
+        console.log("Processing Session Completed Event for " + email +
+          " for " + "$" + (totalAmount/100.0));
+        Firestore.AddUserDeposit(email, (totalAmount/100.0));
       } catch (error) {
         console.log("------------------");
         return res.status(404).send({ error, session });
