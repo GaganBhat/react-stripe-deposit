@@ -5,11 +5,16 @@ const userCollection = db.collection("users");
 
 
 
-export const GetUserData = (email) => {
-  if (email != null)
-    return userCollection.doc(email).getData();
-  else
-    return console.log("No User is Authenticated for get user. ")
+export const GetUserData = async (email) => {
+  try {
+    if (email != null) {
+      const documentReference = userCollection.doc(email);
+      return await documentReference.get();
+    } else
+      return console.log("No User is Authenticated for get user. ")
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 export const CreateUser = userData => {
@@ -26,8 +31,8 @@ export const AddUserDeposit = (email, additionalDeposit) => {
   console.log("Email for deposit = " + email)
 
   if (email != null) {
-    const userData =  GetUserData(email);
-    const currentDepositValue = userData.getData().currentDepositValue;
+    const userData = GetUserData(email);
+    const currentDepositValue = userData.currentDepositValue;
     const finalDepositTotal = currentDepositValue + additionalDeposit;
     console.log("Previous deposit value was $" + currentDepositValue);
     console.log("Final Deposit Total is $" + (finalDepositTotal));
