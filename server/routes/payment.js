@@ -64,8 +64,8 @@ const paymentApi = app => {
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
-      const email = event.data.object.customer_email;
-      const totalAmount = event.data.object.amount_total;
+      const email = event.data.customer_email;
+      const totalAmount = event.data.amount_total;
       try {
         console.log("Processing Session Completed Event for " + email + " for " + totalAmount);
         Firestore.AddUserDeposit(email, totalAmount);
