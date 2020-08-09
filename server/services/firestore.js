@@ -23,6 +23,7 @@ export const CreateUser = userData => {
 }
 
 export const AddUserDeposit = (email, additionalDeposit) => {
+  console.log("Email for deposit = " + email)
 
   if (email != null) {
     const userData =  GetUserData(email).data();
