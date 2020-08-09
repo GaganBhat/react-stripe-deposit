@@ -2,6 +2,7 @@
   <dictionary name="gaganbhat">
     <words>
       <w>createcustomer</w>
+      <w>webhook</w>
     </words>
   </dictionary>
 </component>

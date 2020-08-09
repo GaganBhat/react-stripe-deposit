@@ -47,10 +47,11 @@ const paymentApi = app => {
   });
 
   app.post('/payment/session-complete', async (req, res) => {
-    console.log("Running session Complete")
+    console.log("------------------");
+    console.log("Received session complete webhook request")
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-    let event;
+    let event = req.body;
 
     try {
       event = stripe.webhooks.constructEvent(
@@ -69,7 +70,7 @@ const paymentApi = app => {
       try {
         console.log("Processing Session Completed Event for " + email +
           " for " + "$" + (totalAmount/100.0));
-        Firestore.AddUserDeposit(email, (totalAmount / 100.0));
+        await Firestore.AddUserDeposit(email, (totalAmount / 100.0));
       } catch (error) {
         console.log("------------------");
         console.log("Error = " + error)
