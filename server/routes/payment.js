@@ -65,9 +65,7 @@ const paymentApi = app => {
       const session = event.data.object;
 
       try {
-        // complete your customer's order
-        // e.g. save the purchased product into your database
-        // take the clientReferenceId to map your customer to a product
+        console.log("Processing Session Completed Event");
       } catch (error) {
         return res.status(404).send({ error, session });
       }
