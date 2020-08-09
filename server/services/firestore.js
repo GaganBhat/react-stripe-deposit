@@ -7,7 +7,7 @@ const userCollection = db.collection("users");
 
 export const GetUserData = (email) => {
   if (email != null)
-    return userCollection.doc(email).get();
+    return userCollection.doc(email).getData();
   else
     return console.log("No User is Authenticated for get user. ")
 }
