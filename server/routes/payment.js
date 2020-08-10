@@ -65,12 +65,23 @@ const paymentApi = app => {
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
+      const customerID = event.data.object.customer;
       const email = event.data.object.customer_email;
       const totalAmount = event.data.object.amount_total;
       try {
-        console.log("Processing Session Completed Event for " + email +
+        console.log("Processing Session Event for " + email +
           " for " + "$" + (totalAmount/100.0));
-        await Firestore.AddUserDeposit(email, (totalAmount / 100.0));
+
+        await stripe.customers.createBalanceTransaction(
+          customerID,
+          {
+            amount: -(totalAmount/100.0),
+            currency: 'usd'
+          }, async function(err, balanceTransaction) {
+            console.log("Balance Transaction Completed. ID = " + balanceTransaction.id)
+            console.log("Customer Balance (Negative means credit)  = " + await stripe.customers.retrieve(customerID).balance);
+          }
+        );
       } catch (error) {
         console.log("------------------");
         console.log("Error = " + error)
