@@ -1,5 +1,5 @@
 import React from 'react'
-import Deposit from './Deposit'
+import Deposit from './deposit/Deposit'
 
 
 const Home = () => {

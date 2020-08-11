@@ -78,7 +78,7 @@ const paymentApi = app => {
         await stripe.customers.createBalanceTransaction(
           customerID,
           {
-            amount: -(totalAmount/100.0),
+            amount: -totalAmount,
             currency: 'usd'
           }, async function(err, balanceTransaction) {
             console.log("Balance Transaction Completed. ID = " + balanceTransaction.id)
@@ -94,6 +94,24 @@ const paymentApi = app => {
     console.log("------------------");
     return res.status(200).send({ received: true });
   })
+
+
+  app.post("/payment/create-payment-intent", async (req, res) => {
+    const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
+    let paymentIntent;
+    try {
+        paymentIntent = await stripe.paymentIntents.create({
+          amount: req.body.depositAmount,
+          currency: "usd"
+        });
+    } catch (error) {
+      return res.status(404).send({ error });
+    }
+    res.status(200).send({
+      clientSecret: paymentIntent.client_secret
+    });
+  });
 
   return app;
 };
