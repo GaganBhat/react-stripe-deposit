@@ -72,6 +72,9 @@ const paymentApi = app => {
         console.log("Processing Session Event for " + email +
           " for " + "$" + (totalAmount/100.0));
 
+        console.log("Customer ID = " + customerID);
+        console.log(event.data.object.customer)
+
         await stripe.customers.createBalanceTransaction(
           customerID,
           {
