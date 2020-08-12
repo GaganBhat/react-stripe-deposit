@@ -4,7 +4,10 @@ import {
   useStripe,
   useElements
 } from "@stripe/react-stripe-js";
+import axios from "axios";
+
 export default function CheckoutForm() {
+
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState('');
@@ -12,23 +15,15 @@ export default function CheckoutForm() {
   const [clientSecret, setClientSecret] = useState('');
   const stripe = useStripe();
   const elements = useElements();
+
   useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
-    window
-    .fetch("/create-payment-intent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({items: [{ id: "xl-tshirt" }]})
+    axios.post("https://api.gaganbhat.me/payments/create-payment-intent", {
+      depositAmount: 5000
+    }).then((res) => {
+      setClientSecret(res.data.clientSecret);
     })
-    .then(res => {
-      return res.json();
-    })
-    .then(data => {
-      setClientSecret(data.clientSecret);
-    });
-  }, []);
+  });
+
   const cardStyle = {
     style: {
       base: {
@@ -46,12 +41,14 @@ export default function CheckoutForm() {
       }
     }
   };
+
   const handleChange = async (event) => {
     // Listen for changes in the CardElement
     // and display any errors as the customer types their card details
     setDisabled(event.empty);
     setError(event.error ? event.error.message : "");
   };
+
   const handleSubmit = async ev => {
     ev.preventDefault();
     setProcessing(true);
@@ -72,6 +69,7 @@ export default function CheckoutForm() {
       setSucceeded(true);
     }
   };
+
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <CardElement id="card-element" options={cardStyle} onChange={handleChange} />

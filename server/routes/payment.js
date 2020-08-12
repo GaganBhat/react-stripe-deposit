@@ -97,6 +97,9 @@ const paymentApi = app => {
 
 
   app.post("/payment/create-payment-intent", async (req, res) => {
+    console.log("------------------");
+    console.log("Received create payment intent method");
+
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
     let paymentIntent;
@@ -106,11 +109,15 @@ const paymentApi = app => {
           currency: "usd"
         });
     } catch (error) {
+      console.log("Error! ")
+      console.log(error);
+      console.log("------------------");
       return res.status(404).send({ error });
     }
     res.status(200).send({
       clientSecret: paymentIntent.client_secret
     });
+    console.log("------------------");
   });
 
   return app;
