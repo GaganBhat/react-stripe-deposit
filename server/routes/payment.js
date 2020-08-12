@@ -109,12 +109,26 @@ const paymentApi = app => {
           currency: "usd",
           customer: req.body.customerID
         });
+      await stripe.customers.createBalanceTransaction(
+        req.body.customerID,
+        {
+          amount: -req.body.depositAmount,
+          currency: 'usd'
+        }, async function(err, balanceTransaction) {
+          console.log("Balance Transaction Completed. ID = " + balanceTransaction.id)
+          console.log("Customer Balance (Negative means credit)  = "
+            + await stripe.customers.retrieve(req.body.customerID).balance);
+        }
+      );
     } catch (error) {
       console.log("Error! ")
       console.log(error);
       console.log("------------------");
       return res.status(404).send({ error });
     }
+
+
+
     res.status(200).send({
       clientSecret: paymentIntent.client_secret
     });

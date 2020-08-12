@@ -6,6 +6,7 @@ import {
 } from "@stripe/react-stripe-js";
 import axios from "axios";
 import * as Firestore from '../../services/firestore'
+import "./DepositStylesheet.css"
 
 export default function CheckoutForm(props) {
 
