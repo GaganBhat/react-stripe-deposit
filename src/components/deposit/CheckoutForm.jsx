@@ -6,23 +6,16 @@ import {
 } from "@stripe/react-stripe-js";
 import axios from "axios";
 
-export default function CheckoutForm() {
+export default function CheckoutForm(props) {
 
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [clientSecret, setClientSecret] = useState('');
+  const [depositAmountDollars, setDepositAmountDollars] = useState(50);
   const stripe = useStripe();
   const elements = useElements();
-
-  useEffect(() => {
-    axios.post("https://api.gaganbhat.me/payments/create-payment-intent", {
-      depositAmount: 5000
-    }).then((res) => {
-      setClientSecret(res.data.clientSecret);
-    })
-  });
 
   const cardStyle = {
     style: {
@@ -51,12 +44,19 @@ export default function CheckoutForm() {
 
   const handleSubmit = async ev => {
     ev.preventDefault();
+
+    await axios.post("https://api.gaganbhat.me/payment/create-payment-intent", {
+      depositAmount: (depositAmountDollars * 100)
+    }).then((res) => {
+      setClientSecret(res.data.clientSecret);
+    })
+
     setProcessing(true);
     const payload = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: ev.target.name.value
+          name: props.currentUser.name
         }
       }
     });
@@ -72,7 +72,21 @@ export default function CheckoutForm() {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <CardElement id="card-element" options={cardStyle} onChange={handleChange} />
+      <label>
+        Deposit Amount in USD
+        <input
+          type="number"
+          min="1"
+          step="1"
+          defaultValue="50"
+          name="depositAmount"
+          required
+          onChange={(
+            event) => {setDepositAmountDollars(event.target.value)
+          }}
+        />
+      </label>
+      <CardElement id="card-element" options={cardStyle} onChange={handleChange}/>
       <button
         disabled={processing || disabled || succeeded}
         id="submit"

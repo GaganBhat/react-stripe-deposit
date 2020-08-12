@@ -117,6 +117,7 @@ const paymentApi = app => {
     res.status(200).send({
       clientSecret: paymentIntent.client_secret
     });
+    console.log("Successfully returned client secret = " + paymentIntent.client_secret);
     console.log("------------------");
   });
 
