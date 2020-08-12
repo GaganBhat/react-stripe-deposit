@@ -33,7 +33,7 @@ const SignUp = ({ history }) => {
   }, [history]);
 
   return (
-    <div style={{width: "25%", margin: "0 auto"}}>
+    <div >
       <h1>Sign up</h1>
       <form onSubmit={handleSignUp}>
         <label>

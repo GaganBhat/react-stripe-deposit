@@ -30,7 +30,7 @@ const Login = ({ history }) => {
   }
 
   return (
-    <div style={{width: "25%", margin: "0 auto"}}>
+    <div>
       <h1>Log in</h1>
       <form onSubmit={handleLogin}>
         <label>
