@@ -18,14 +18,12 @@ export default function CheckoutForm(props) {
   const stripe = useStripe();
   const elements = useElements();
 
-  let customerID;
-  React.useEffect(  () => {
-    let userData;
-    async function getData() {
-      userData = await Firestore.GetUserDataCustom(props.currentUser);
-    }
-    getData().then(() => {customerID = userData.data().customerID});
-  }, [])
+  // let customerID;
+  // React.useEffect(  () => {
+  //   let userData;
+  //
+  //   getData().then(() => {customerID = userData.data().customerID});
+  // }, [])
 
 
   const cardStyle = {
@@ -53,13 +51,21 @@ export default function CheckoutForm(props) {
     setError(event.error ? event.error.message : "");
   };
 
+  const getData = async () => {
+    return await Firestore.GetUserDataCustom(props.currentUser);
+  }
+
   const handleSubmit = async ev => {
     ev.preventDefault();
 
+    const userData = await getData();
+    console.log(userData.data().customerID)
+
+    console.log("Customer ID = " + userData.data().customerID);
     const stripeClientSecret =
       await axios.post("https://api.gaganbhat.me/payment/create-payment-intent", {
         depositAmount: (depositAmountDollars * 100),
-        customerID: customerID
+        customerID: userData.data().customerID
     });
 
     setProcessing(true);
