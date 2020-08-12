@@ -5,6 +5,7 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 import axios from "axios";
+import * as Firestore from '../../services/firestore'
 
 export default function CheckoutForm(props) {
 
@@ -12,10 +13,18 @@ export default function CheckoutForm(props) {
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState('');
   const [disabled, setDisabled] = useState(true);
-  const [clientSecret, setClientSecret] = useState('');
   const [depositAmountDollars, setDepositAmountDollars] = useState(50);
   const stripe = useStripe();
   const elements = useElements();
+
+  let userData;
+  React.useEffect(  () => {
+    async function getData() {
+      userData = await Firestore.GetUserDataCustom(props.currentUser);
+    }
+    getData();
+  }, [])
+
 
   const cardStyle = {
     style: {
@@ -45,14 +54,13 @@ export default function CheckoutForm(props) {
   const handleSubmit = async ev => {
     ev.preventDefault();
 
-    await axios.post("https://api.gaganbhat.me/payment/create-payment-intent", {
-      depositAmount: (depositAmountDollars * 100)
-    }).then((res) => {
-      setClientSecret(res.data.clientSecret);
-    })
-
+    const stripeClientSecret =
+      await axios.post("https://api.gaganbhat.me/payment/create-payment-intent", {
+        depositAmount: (depositAmountDollars * 100),
+        customerID: userData.data().customerID
+    });
     setProcessing(true);
-    const payload = await stripe.confirmCardPayment(clientSecret, {
+    const payload = await stripe.confirmCardPayment(stripeClientSecret.data.clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {

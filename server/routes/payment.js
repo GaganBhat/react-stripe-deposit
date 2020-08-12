@@ -106,7 +106,8 @@ const paymentApi = app => {
     try {
         paymentIntent = await stripe.paymentIntents.create({
           amount: req.body.depositAmount,
-          currency: "usd"
+          currency: "usd",
+          customer: req.body.customerID
         });
     } catch (error) {
       console.log("Error! ")
