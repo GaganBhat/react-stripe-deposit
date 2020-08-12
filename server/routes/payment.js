@@ -117,8 +117,10 @@ const paymentApi = app => {
         }, async function(err, balanceTransaction) {
           // console.log("Balance Transaction Completed. ID = " + balanceTransaction)
           const customer = await stripe.customers.retrieve(req.body.customerID);
+          customer.balance
           console.log(customer);
           console.log("Customer Balance (Negative means credit) = " + customer.balance);
+          console.log("------------------");
         }
       );
     } catch (error) {

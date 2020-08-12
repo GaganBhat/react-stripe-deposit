@@ -84,6 +84,7 @@ export default function CheckoutForm(props) {
       setError(null);
       setProcessing(false);
       setSucceeded(true);
+      window.location.reload();
     }
   };
 
