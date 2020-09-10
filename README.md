@@ -1,6 +1,8 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## React Stripe Deposit 
+Barebones federally compliant deposit system for USD using ReactJS, Google Firebase, Stripe.js and ExpressJS backend. 
 
-## Available Scripts
+![](./Deposit%20Screenshot.png)
+![](./Payments%20Graph%20Visualizer.png)
 
 In the project directory, you can run:
 
